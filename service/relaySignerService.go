@@ -429,7 +429,7 @@ func decrement() {
 }
 
 func (service *RelaySignerService) incrementTransactionCount(from string, nonce uint64) {
-	if service.senders[from] != nil {
+	if service.senders[from] != nil && nonce >= service.senders[from].Uint64() {
 		newNonce := service.senders[from].Uint64() + 1
 		service.senders[from].SetUint64(newNonce)
 	} else {
