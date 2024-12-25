@@ -75,7 +75,8 @@ func (service *RelaySignerService) Init(_config *model.Config) error {
 			return errors.InvalidAddress.New("Invalid Account Smart Contract Address", -32608)
 		}
 	}
-
+	log.GeneralLogger.Printf("NODEURL: %s", service.Config.Application.NodeURL)
+	log.GeneralLogger.Printf("ContractAddress: %s", service.Config.Application.ContractAddress)
 	service.Config.Application.RelayHubContractAddress, err = getRelayHubContractAddress(service.Config.Application.NodeURL, "1000", service.Config.Application.ContractAddress, 10)
 	if err != nil {
 		return errors.FailedKeyConfig.New("Can't get relayHub smart contract address from Proxy", -32610)
@@ -102,6 +103,7 @@ func (service *RelaySignerService) SendMetatransaction(id json.RawMessage, to *c
 	if err != nil {
 		return HandleError(id, err)
 	}
+	log.GeneralLogger.Println("SendMetatransaction client")
 	tx, err := client.SendMetatransaction(*service.Config.Application.RelayHubContractAddress, optionsSendTransaction, to, signingData, v, r, s)
 	if err != nil {
 		return HandleError(id, err)
@@ -231,6 +233,8 @@ func (service *RelaySignerService) GetTransactionCount(id json.RawMessage, from 
 	result := new(rpc.JsonrpcMessage)
 
 	result.ID = id
+	nonce := fmt.Sprintf("0x%x", count)
+	log.GeneralLogger.Printf("GetTransactionCount=[From:%s,nonce:%s ]", from, nonce)
 	return result.Response(fmt.Sprintf("0x%x", count))
 }
 

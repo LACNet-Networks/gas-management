@@ -163,6 +163,7 @@ func (ec *Client) GenerateTransaction(options *bind.TransactOpts, to *common.Add
 
 // GetTransactionReceipt ...
 func (ec *Client) GetTransactionReceipt(transactionHash common.Hash) (*types.Receipt, error) {
+	log.GeneralLogger.Printf("INIT Receipt of Tx:%s was ", transactionHash.Hex())
 	receipt, err := ec.client.TransactionReceipt(context.Background(), transactionHash)
 	if err != nil {
 		msg := fmt.Sprintf("failed get transaction receipt %s", transactionHash.Hex())
